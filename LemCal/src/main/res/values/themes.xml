@@ -1,0 +1,38 @@
+<!--
+Copyright 2022 Anypodetos (Michael Weber)
+
+This file is part of LemCal.
+
+LemCal is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+LemCal is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with LemCal. If not, see <https://www.gnu.org/licenses/>.
+
+Contact: <https://lemizh.conlang.org/home/contact.php>
+-->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme -->
+    <style name="Theme.LemCal" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/lem_green_dark</item>
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/lem_green_light</item>
+        <item name="colorPrimaryVariant">@color/lem_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/lime_dark</item>
+        <item name="colorSecondaryVariant">@color/lime_light</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Other -->
+        <item name="editTextColor">@color/black</item>
+    </style>
+</resources>

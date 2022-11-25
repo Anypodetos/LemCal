@@ -1,0 +1,96 @@
+<!--
+Copyright 2022 Anypodetos (Michael Weber)
+
+This file is part of LemCal.
+
+LemCal is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+LemCal is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with LemCal. If not, see <https://www.gnu.org/licenses/>.
+
+Contact: <https://lemizh.conlang.org/home/contact.php>
+-->
+
+<resources>
+    <string name="app_name" translatable="false">LemCal</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="close">Close</string>
+
+    <string name="timezone_title">Time zone correction</string>
+    <string name="timezone_text">Lemizh time zone: LUT+%1$d min&lt;br>
+minus phone’s time zone: UTC+%2$d min&lt;br>
+plus LUT−UTC: +113 min&lt;br>&lt;br>
+&lt;b>Total correction: +%3$d min&lt;/b>&lt;br>&lt;br>
+LUT = Lemizh Universal Time&lt;br>
+UTC = Coordinated Universal Time</string>
+
+    <string name="solar_year">solar year %s</string>
+    <string name="lunar_year">lunar year −%s</string>
+    <string name="gregorian_year">%s CE</string>
+    <string name="solar_years">solar years %1$s/%2$s</string>
+    <string name="lunar_years">lunar years −%1$s/%2$s</string>
+    <string name="gregorian_years">Gregorian %1$s/%2$s</string>
+    <string name="go_solar_year">Go to solar year</string>
+    <string name="go_lunar_year">Go to lunar year (omit minus sign)</string>
+    <string name="go_gregorian_year">Go to Common Era year</string>
+    <string name="go_today">Go to today</string>
+    <string name="solar_year_start">start of solar year %d</string>
+    <string name="week_title">This row</string>
+    <string name="day_title">This day</string>
+    <string name="lunar_template">Lunar year −%1$d, month %2$d, day %3$s</string>
+    <string name="unix_template">Unix day %s</string>
+
+    <string name="settings">Settings</string>
+    <string name="monthColors_title">Calendar background colours</string>
+    <string name="theme_title">Theme</string>
+
+    <string name="about">About</string>
+    <string name="about_title">About LemCal for Android v%s</string>
+    <string name="css" translatable="false"><![CDATA[
+<style>
+    body {padding-top: 1.5em; padding-bottom: 2em}
+    h1, h2, h3 {font-family: serif}
+    h1 {font-size: 140%}
+    h2 {font-size: 125%; border-radius: 0.2em; background: %23e0e0e0}
+    a {color: %23009958} /* lem_green_light */
+</style>
+    ]]></string>
+    <string name="css_dark" translatable="false"><![CDATA[
+<style>
+    body {color: white; background: %23121212}
+    h2 {background: %23404040}
+</style>
+    ]]></string>
+    <string name="about_text"><![CDATA[
+<h2>Welcome</h2>
+<p>This app provides, for no good reason, a real-time clock and calendar for the fictional Lemizh world, which is the home of my constructed language.</p>
+<p>You can find out all about Lemizh at <a href="https://lemizh.conlang.org/">https://lemizh.conlang.org</a>.</p>
+<p>If you have any suggestions or questions, or you want to report a bug, or you just want to tell me whether you like this app,
+please <a href="https://lemizh.conlang.org/home/contact.php">contact me</a>.</p>
+
+<h2>GNU General Public License</h2>
+<p>Copyright 2022 Anypodetos (Michael Weber)</p>
+<p>LemCal is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p>LemCal is distributed in the futile hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with LemCal.
+If not, see <a href="https://www.gnu.org/licenses/licenses.en.html%23GPL">https://www.gnu.org/licenses/licenses.en.html%23GPL</a>.</p>
+
+<h2>Creative Commons License</h2>
+<p>The <a href="https://commons.wikimedia.org/wiki/File:Simpleicons_Business_calendar-with-a-clock-time-tools.svg">app’s icon</a> is from SimpleIcon.
+It is available under the terms of the Creative Commons Attribution 3.0 License.</p>
+<p>The other icons are mostly by Google and are available under the
+<a href="https://creativecommons.org/licenses/by/4.0/deed.en">Creative Commons Attribution 4.0 International</a> license.</p>
+    ]]></string>
+
+</resources>
