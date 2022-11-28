@@ -21,6 +21,7 @@ along with LemCal. If not, see <https://www.gnu.org/licenses/>.
 Contact: <https://lemizh.conlang.org/home/contact.php>
 */
 
+import android.content.ClipData
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Canvas
@@ -34,6 +35,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
 import java.util.*
@@ -102,13 +104,20 @@ class TimeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             invalidate()
         }
         setOnClickListener {
-            if (mainActivity != null) {
-                val lemZone = mainActivity.timeZone * 90 /* in minutes */
-                val ourZone = TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000
-                AlertDialog.Builder(mainActivity)
-                    .setTitle(R.string.timezone_title)
-                    .setMessage(HtmlCompat.fromHtml(resources.getString(R.string.timezone_text, lemZone, ourZone, lemZone - ourZone + 113)
-                        .replace("+-", "−"), HtmlCompat.FROM_HTML_MODE_LEGACY))
+            mainActivity?.let {
+                val lemZone = it.timeZone * 90 /* in minutes */
+                val timeZone = TimeZone.getDefault()
+                val ourZone = timeZone.getOffset(System.currentTimeMillis()) / 60_000
+                val title = it.getString(R.string.timezone_title)
+                val message = HtmlCompat.fromHtml(resources.getString(R.string.timezone_text, lemZone, ourZone, timeZone.displayName, lemZone - ourZone + 113)
+                        .replace("+-", "−"), HtmlCompat.FROM_HTML_MODE_LEGACY)
+                AlertDialog.Builder(it)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.copy_my) { _, _ ->
+                        it.clipboard?.setPrimaryClip(ClipData.newPlainText(null, title + "\n\n" + message))
+                        Toast.makeText(it.applicationContext, it.getString(R.string.clipboard_ok), Toast.LENGTH_SHORT).show()
+                    }
                     .setNegativeButton(R.string.close) { _, _ -> }
                     .create().show()
             }
@@ -120,9 +129,7 @@ class TimeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         landscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         centre1 = min(w, h) / 2f
         centre2 = w - centre1
-        radius = // min(centre1 * 0.8f, max(w, h) / 6f) //
-                 //if (landscape) w / 6f else (centre1 * 0.8f).coerceAtMost(10 * markPaint[0].textSize)
-                (centre1 * 0.8f).coerceAtMost(if (landscape) w / 6f else 10 * markPaint[0].textSize)
+        radius = (centre1 * 0.8f).coerceAtMost(if (landscape) w / 6f else 10 * markPaint[0].textSize)
         textX = if (landscape) w / 2f else centre1
         textY = if (landscape) centre1 else 2.1f * centre1
         calcLemClock()

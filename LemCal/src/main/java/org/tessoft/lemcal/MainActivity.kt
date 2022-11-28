@@ -21,6 +21,7 @@ along with LemCal. If not, see <https://www.gnu.org/licenses/>.
 Contact: <https://lemizh.conlang.org/home/contact.php>
 */
 
+import android.content.ClipboardManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -37,6 +38,10 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
+enum class MonthColors {
+    LUNAR, GREGORIAN, SEASONS, GREEN, NONE
+}
+
 class Adapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
     override fun createFragment(position: Int): Fragment = if (position == 0) TimeFragment() else DateFragment()
@@ -47,14 +52,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var pager: ViewPager2
     private lateinit var tabs: TabLayout
+    var clipboard: ClipboardManager? = null
 
     var timeZone = 0
     var datePosition = 0
-    var monthColors = 0
+    var monthColors = MonthColors.LUNAR
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        setDayNight()
+        setDayNight(PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "")?.firstOrNull() ?: 'S')
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -65,6 +71,8 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabs, pager) { tab, position ->
             tab.setText(if (position == 0) R.string.time else R.string.date)
         }.attach()
+
+        clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -73,8 +81,8 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.aboutItem -> startActivity(Intent(this, AboutActivity::class.java))
             R.id.settingsItem -> startActivity(Intent(this, SettingsActivity::class.java))
+            R.id.aboutItem -> startActivity(Intent(this, AboutActivity::class.java))
         }
         return true
     }
@@ -82,10 +90,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        pager.currentItem = preferences.getInt("page", 0)
+        pager.setCurrentItem(preferences.getInt("page", 0), false)
         timeZone = preferences.getInt("timezone", 0)
         datePosition = preferences.getInt("datePosition", -1)
-        monthColors = preferences.getString("monthColors", "")?.toIntOrNull() ?: 1
+        monthColors = try { MonthColors.valueOf(preferences.getString("monthColors", null) ?: "") } catch (e: Exception) { MonthColors.LUNAR }
     }
 
     override fun onPause() {
