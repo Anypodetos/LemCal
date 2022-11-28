@@ -23,13 +23,16 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
     <string name="app_name" translatable="false">LemCal</string>
     <string name="time">Time</string>
     <string name="date">Date</string>
+    <string name="copy_my">Copy</string>
     <string name="close">Close</string>
+    <string name="clipboard_ok">Copied to clipboard</string>
 
     <string name="timezone_title">Time zone correction</string>
     <string name="timezone_text">Lemizh time zone: LUT+%1$d min&lt;br>
 minus phone’s time zone: UTC+%2$d min&lt;br>
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;(%3$s)&lt;br>
 plus LUT−UTC: +113 min&lt;br>&lt;br>
-&lt;b>Total correction: +%3$d min&lt;/b>&lt;br>&lt;br>
+&lt;b>Total correction: +%4$d min&lt;/b>&lt;br>&lt;br>
 LUT = Lemizh Universal Time&lt;br>
 UTC = Coordinated Universal Time</string>
 
@@ -38,7 +41,7 @@ UTC = Coordinated Universal Time</string>
     <string name="gregorian_year">%s CE</string>
     <string name="solar_years">solar years %1$s/%2$s</string>
     <string name="lunar_years">lunar years −%1$s/%2$s</string>
-    <string name="gregorian_years">Gregorian %1$s/%2$s</string>
+    <string name="gregorian_years">%1$s/%2$s CE</string>
     <string name="go_solar_year">Go to solar year</string>
     <string name="go_lunar_year">Go to lunar year (omit minus sign)</string>
     <string name="go_gregorian_year">Go to Common Era year</string>

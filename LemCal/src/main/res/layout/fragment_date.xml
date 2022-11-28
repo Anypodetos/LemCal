@@ -44,7 +44,7 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center|center_horizontal"
+            android:gravity="center"
             android:textColor="?colorPrimaryVariant" />
 
         <TextView
@@ -55,7 +55,7 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center|center_horizontal"
+            android:gravity="center"
             android:textColor="?colorPrimaryVariant" />
 
         <TextView
@@ -66,7 +66,7 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center|center_horizontal"
+            android:gravity="center"
             android:textColor="?colorPrimaryVariant" />
 
     </LinearLayout>
@@ -84,6 +84,8 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
         android:id="@+id/weekdays"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

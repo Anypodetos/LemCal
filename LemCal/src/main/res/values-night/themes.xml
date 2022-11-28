@@ -19,7 +19,7 @@ along with LemCal. If not, see <https://www.gnu.org/licenses/>.
 Contact: <https://lemizh.conlang.org/home/contact.php>
 -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme -->
     <style name="Theme.LemCal" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Status bar color -->

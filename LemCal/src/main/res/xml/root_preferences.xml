@@ -24,7 +24,7 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
         app:iconSpaceReserved="false">
 
     <ListPreference
-        app:defaultValue="1"
+        app:defaultValue="LUNAR"
         app:entries="@array/monthColors_entries"
         app:entryValues="@array/monthColors_values"
         app:iconSpaceReserved="false"
