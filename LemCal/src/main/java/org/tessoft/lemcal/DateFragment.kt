@@ -207,9 +207,6 @@ class RecyclerAdapter internal constructor(private val mainActivity: MainActivit
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
         holder.week.unixDay = 7 * position - 6 * (position / 53) + position / 212 - (position + 5512) / 6784 + UNIX_DAY_START
-        holder.week.today = with (Calendar.getInstance().timeInMillis / 86_400_000 - (holder.week.unixDay - 1).toLong()) {
-            if (this in 1..7) this.toInt() else 0
-        }
 
         /*  s o l a r   d a t e  */
         holder.week.solarYear = position / 53 + SOLAR_YEAR_START
@@ -218,6 +215,9 @@ class RecyclerAdapter internal constructor(private val mainActivity: MainActivit
             holder.week.solarWeek < 53 -> 7
             holder.week.solarYear % 4 == 0 && holder.week.solarYear % 128 != 0 -> 2
             else -> 1
+        }
+        holder.week.today = with (Calendar.getInstance().timeInMillis / 86_400_000 - (holder.week.unixDay - 1).toLong()) {
+            if (this in 1..dayCount) this.toInt() else 0
         }
         holder.week.cellTexts[0][0] = when (holder.week.solarWeek) {
             1, 21, 31, 41, 51 -> "${holder.week.solarWeek}st"
