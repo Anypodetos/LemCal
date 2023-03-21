@@ -53,7 +53,13 @@ UTC = Coordinated Universal Time</string>
     <string name="unix_template">Unix day %s</string>
 
     <string name="settings">Settings</string>
-    <string name="monthColors_title">Calendar background colours</string>
+    <string name="time_header">Time</string>
+    <string name="analogNumbers_title">Analog clock</string>
+    <string name="digitalNumbers_title">Digital clock</string>
+    <string name="date_header">Date</string>
+    <string name="calendarNumbers_title">Numbers in solar and lunar dates</string>
+    <string name="monthColors_title">Background colours</string>
+    <string name="general_header">General</string>
     <string name="theme_title">Theme</string>
 
     <string name="about">About</string>
@@ -81,13 +87,13 @@ UTC = Coordinated Universal Time</string>
 please <a href="https://lemizh.conlang.org/home/contact.php">contact me</a>.</p>
 
 <h2>GNU General Public License</h2>
-<p>Copyright 2022 Anypodetos (Michael Weber)</p>
+<p>Copyright 2022, 2023 Anypodetos (Michael Weber)</p>
 <p>LemCal is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
 <p>LemCal is distributed in the futile hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
 <p>You should have received a copy of the GNU General Public License along with LemCal.
-If not, see <a href="https://www.gnu.org/licenses/licenses.en.html%23GPL">https://www.gnu.org/licenses/licenses.en.html%23GPL</a>.</p>
+If not, see <a href="https://www.gnu.org/licenses/gpl-3.0-standalone.html">https://www.gnu.org/licenses/gpl-3.0-standalone.html</a>.</p>
 
 <h2>Creative Commons License</h2>
 <p>The <a href="https://commons.wikimedia.org/wiki/File:Simpleicons_Business_calendar-with-a-clock-time-tools.svg">app’s icon</a> is from SimpleIcon.

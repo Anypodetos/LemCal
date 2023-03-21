@@ -35,6 +35,15 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
         <item>Neptunian day</item>
     </string-array>
 
+    <string-array name="numbers_entries">
+        <item>Decimal</item>
+        <item>Hexadecimal</item>
+    </string-array>
+    <string-array name="numbers_values" translatable="false">
+        <item>10</item>
+        <item>16</item>
+    </string-array>
+
     <string-array name="monthColors_entries">
         <item>Lunar months</item>
         <item>Gregorian months</item>

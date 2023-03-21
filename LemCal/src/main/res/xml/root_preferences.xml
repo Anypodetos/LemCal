@@ -23,22 +23,62 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:iconSpaceReserved="false">
 
-    <ListPreference
-        app:defaultValue="LUNAR"
-        app:entries="@array/monthColors_entries"
-        app:entryValues="@array/monthColors_values"
-        app:iconSpaceReserved="false"
-        app:key="monthColors"
-        app:title="@string/monthColors_title"
-        app:useSimpleSummaryProvider="true" />
+    <PreferenceCategory
+        android:title="@string/time_header"
+        app:iconSpaceReserved="false">
 
-    <ListPreference
-        app:defaultValue="S"
-        app:entries="@array/theme_entries"
-        app:entryValues="@array/theme_values"
-        app:iconSpaceReserved="false"
-        app:key="theme"
-        app:title="@string/theme_title"
-        app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:defaultValue="16"
+            android:entries="@array/numbers_entries"
+            android:entryValues="@array/numbers_values"
+            android:key="analogNumbers"
+            android:title="@string/analogNumbers_title"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:defaultValue="16"
+            android:entries="@array/numbers_entries"
+            android:entryValues="@array/numbers_values"
+            android:key="digitalNumbers"
+            android:title="@string/digitalNumbers_title"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/date_header"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="10"
+            android:entries="@array/numbers_entries"
+            android:entryValues="@array/numbers_values"
+            android:key="calendarNumbers"
+            android:title="@string/calendarNumbers_title"
+            app:iconSpaceReserved="false"
+            app:isPreferenceVisible="false"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            app:defaultValue="LUNAR"
+            app:entries="@array/monthColors_entries"
+            app:entryValues="@array/monthColors_values"
+            app:iconSpaceReserved="false"
+            app:key="monthColors"
+            app:title="@string/monthColors_title"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/general_header"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            app:defaultValue="S"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:iconSpaceReserved="false"
+            app:key="theme"
+            app:title="@string/theme_title"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
