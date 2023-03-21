@@ -56,6 +56,9 @@ class MainActivity : AppCompatActivity() {
 
     var timeZone = 0
     var datePosition = 0
+    var analogNumbers = 16
+    var digitalNumbers = 16
+    var calendarNumbers = 10
     var monthColors = MonthColors.LUNAR
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +96,9 @@ class MainActivity : AppCompatActivity() {
         pager.setCurrentItem(preferences.getInt("page", 0), false)
         timeZone = preferences.getInt("timezone", 0)
         datePosition = preferences.getInt("datePosition", -1)
+        analogNumbers = preferences.getString("analogNumbers", null)?.toIntOrNull() ?: 16
+        digitalNumbers = preferences.getString("digitalNumbers", null)?.toIntOrNull() ?: 16
+        calendarNumbers = preferences.getString("calendarNumbers", null)?.toIntOrNull() ?: 10
         monthColors = try { MonthColors.valueOf(preferences.getString("monthColors", null) ?: "") } catch (e: Exception) { MonthColors.LUNAR }
     }
 

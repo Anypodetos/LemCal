@@ -161,7 +161,7 @@ class TimeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             timeFloat *= 16
         }
 
-        lemTimeText = time.toString(16).uppercase().padStart(4, '0')
+        lemTimeText = time.toString(mainActivity?.digitalNumbers ?: 16).uppercase().padStart(4, '0')
     }
 
     private fun calcOurClock() {
@@ -194,7 +194,7 @@ class TimeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         super.onDraw(canvas)
         canvas?.let {
             it.drawCircle(centre1, centre1, radius, clockPaint)
-            for (i in 0..15) it.drawText(i.toString(16).uppercase(), lemHourMarks[i].first, lemHourMarks[i].second,
+            for (i in 0..15) it.drawText(i.toString(mainActivity?.analogNumbers ?: 16).uppercase(), lemHourMarks[i].first, lemHourMarks[i].second,
                 markPaint[if (i % 4 != 0) 0 else 1])
             for (i in 0..2) it.drawLine(lemBackHands[i].first, lemBackHands[i].second, lemHands[i].first, lemHands[i].second, handPaint[i])
             if (landscape) {

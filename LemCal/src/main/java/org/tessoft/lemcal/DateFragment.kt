@@ -104,7 +104,12 @@ class WeekView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 if (isWeekdays) {
                     if (cell > 0) {
                         playSoundEffect(SoundEffectConstants.CLICK)
-                        Toast.makeText(mainActivity, cellTexts[cell][0] + " – " + daysOfWeek[cell], Toast.LENGTH_SHORT).show()
+                        val firstWeekday = DateUtils.formatDateTime(context, ((DateFragment.firstViewHolder().second?.unixDay ?: 0) + cell - 1) * 86_400_000L,
+                            DateUtils.FORMAT_SHOW_WEEKDAY)
+                        val lastWeekday = DateUtils.formatDateTime(context, ((DateFragment.lastViewHolder().second?.unixDay ?: 0) + cell - 1) * 86_400_000L,
+                            DateUtils.FORMAT_SHOW_WEEKDAY)
+                        Toast.makeText(mainActivity, cellTexts[cell][0] + " – " + daysOfWeek[cell] + " – " +
+                            if (firstWeekday == lastWeekday) firstWeekday else "$firstWeekday/$lastWeekday", Toast.LENGTH_SHORT).show()
                         true
                     } else false
                 } else {
@@ -117,14 +122,14 @@ class WeekView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                         playSoundEffect(SoundEffectConstants.CLICK)
                         val title = mainActivity.getString(if (cell == 0) R.string.week_title else R.string.day_title)
                         val lunarMessage = if (cell > 0)
-                            "\n◆ " + resources.getString(R.string.lunar_template, lunarYear(cell), lunarMonths[if (cell < lunarBackLimits[1]) 0 else 1],
-                                cellTexts[cell][0].substringAfter('–')) else ""
+                            ("\n◆ " + resources.getString(R.string.lunar_template, lunarYear(cell), lunarMonths[if (cell < lunarBackLimits[1]) 0 else 1],
+                                cellTexts[cell][0].substringAfter('–'))) else ""
                         val gregorianMessage = if (cell > 0)
-                            "\n◆ " + DateUtils.formatDateTime(context, (unixDay + cell - 1) * 86_400_000.toLong(),
-                                DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR) else ""
+                            ("\n◆ " + DateUtils.formatDateTime(context, (unixDay + cell - 1) * 86_400_000L,
+                                DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR)) else ""
                         val unixMessage = if (cell > 0)
-                            "\n◆ " + resources.getString(R.string.unix_template, DecimalFormat("#,###,##0").format(unixDay + cell - 1))
-                                .replace('-', '−') else ""
+                            ("\n◆ " + resources.getString(R.string.unix_template, DecimalFormat("#,###,##0").format(unixDay + cell - 1))
+                                .replace('-', '−')) else ""
                         val message = "◆ $solarMessage $solarYear$lunarMessage$gregorianMessage$unixMessage"
                         AlertDialog.Builder(mainActivity)
                             .setTitle(title)
@@ -216,7 +221,7 @@ class RecyclerAdapter internal constructor(private val mainActivity: MainActivit
             holder.week.solarYear % 4 == 0 && holder.week.solarYear % 128 != 0 -> 2
             else -> 1
         }
-        holder.week.today = with (Calendar.getInstance().timeInMillis / 86_400_000 - (holder.week.unixDay - 1).toLong()) {
+        holder.week.today = with (Calendar.getInstance().timeInMillis / 86_400_000 - (holder.week.unixDay - 1L)) {
             if (this in 1..dayCount) this.toInt() else 0
         }
         holder.week.cellTexts[0][0] = when (holder.week.solarWeek) {
@@ -267,12 +272,12 @@ class RecyclerAdapter internal constructor(private val mainActivity: MainActivit
 
         /*  G r e g o r i a n   d a t e  */
         for (i in 0..1) {
-            val unixStamp = holder.week.unixDay * 86_400_000.toLong()
+            val unixStamp = holder.week.unixDay * 86_400_000L
             holder.week.gregorianMonths[i] = ((SimpleDateFormat("M").format(unixStamp).toIntOrNull() ?: 0) + i - 1) % 12 + 1
             holder.week.gregorianBackLimits[i + 1] = dayCount + 1
         }
         for (i in 1..dayCount) {
-            val unixStamp = (holder.week.unixDay + i - 1) * 86_400_000.toLong()
+            val unixStamp = (holder.week.unixDay + i - 1) * 86_400_000L
             val gregorianDay = SimpleDateFormat("d").format(unixStamp)
             holder.week.cellTexts[i][1] = (if (gregorianDay == "1") SimpleDateFormat("MMM ").format(unixStamp) else "") + gregorianDay
             if (i > 1 && gregorianDay == "1") holder.week.gregorianBackLimits[1] = i
@@ -302,7 +307,6 @@ class DateFragment : Fragment() {
     private lateinit var lunarYear: TextView
     private lateinit var gregorianYear: TextView
     private lateinit var todayButton: ImageButton
-    private lateinit var recycler: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_date, container, false)
@@ -320,20 +324,18 @@ class DateFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (recycler.layoutManager is LinearLayoutManager) {
-                    val first = (recycler.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                    val last  = (recycler.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    val (first, firstWeek) = firstViewHolder()
+                    val (last,  lastWeek)  = lastViewHolder()
                     val firstSolar = (first / 53 + SOLAR_YEAR_START).toString()
                     val lastSolar  = (last  / 53 + SOLAR_YEAR_START).toString()
                     solarYear.text = if (firstSolar == lastSolar) getString(R.string.solar_year, firstSolar) else
                         getString(R.string.solar_years, firstSolar, lastSolar.removePrefix(lastSolar.commonPrefixWith(firstSolar)))
-                    recycler.findViewHolderForAdapterPosition(first)?.let { firstHolder ->
-                        recycler.findViewHolderForAdapterPosition(last)?.let { lastHolder ->
-                            val firstLunar = (if (firstHolder is RecyclerAdapter.WeekViewHolder) firstHolder.week.lunarYear    else 0).toString()
-                            val lastLunar  = (if (lastHolder  is RecyclerAdapter.WeekViewHolder) lastHolder .week.lunarYear(7) else 0).toString()
-                            lunarYear.text = if (firstLunar == lastLunar) getString(R.string.lunar_year, firstLunar) else
-                                getString(R.string.lunar_years, firstLunar, lastLunar.removePrefix(lastLunar.commonPrefixWith(firstLunar)))
-                        }
-                    }
+
+                    val firstLunar = firstWeek?.lunarYear.toString()
+                    val lastLunar  = lastWeek?.lunarYear(7).toString()
+                    lunarYear.text = if (firstLunar == lastLunar) getString(R.string.lunar_year, firstLunar) else
+                        getString(R.string.lunar_years, firstLunar, lastLunar.removePrefix(lastLunar.commonPrefixWith(firstLunar)))
+
                     val firstGregorian = ((first - 2) / 53 - 1463 + SOLAR_YEAR_START).toString()
                     val lastGregorian  = ((last  - 1) / 53 - 1463 + SOLAR_YEAR_START).toString()
                     gregorianYear.text = if (firstGregorian == lastGregorian) getString(R.string.gregorian_year, firstGregorian) else
@@ -350,7 +352,7 @@ class DateFragment : Fragment() {
         }
         lunarYear.setOnClickListener {
             gotoYearDialog(R.string.go_lunar_year) {
-                ((it - 2078) * 59.7245 - UNIX_DAY_START / 6.89136).roundToInt() - 20
+                ((it - 2078) * 59.7245 - UNIX_DAY_START / 6.89136).roundToInt() - 20 /// tweak?
             }
         }
         gregorianYear.setOnClickListener {
@@ -410,5 +412,20 @@ class DateFragment : Fragment() {
       //  val distance = position - (activity as MainActivity).datePosition
       //  if (abs(distance) > 10) recycler.scrollToPosition(position - 10 * distance.sign)
         recycler.scrollToPosition(position)
+    }
+
+    companion object {
+
+        private lateinit var recycler: RecyclerView
+
+        fun firstViewHolder(): Pair<Int, WeekView?> {
+            val pos = (recycler.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            return Pair(pos, (recycler.findViewHolderForAdapterPosition(pos) as? RecyclerAdapter.WeekViewHolder)?.week)
+        }
+
+        fun lastViewHolder(): Pair<Int, WeekView?> {
+            val pos = (recycler.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            return Pair(pos, (recycler.findViewHolderForAdapterPosition(pos) as? RecyclerAdapter.WeekViewHolder)?.week)
+        }
     }
 }
