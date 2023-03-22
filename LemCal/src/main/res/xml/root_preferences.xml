@@ -55,7 +55,6 @@ Contact: <https://lemizh.conlang.org/home/contact.php>
             android:key="calendarNumbers"
             android:title="@string/calendarNumbers_title"
             app:iconSpaceReserved="false"
-            app:isPreferenceVisible="false"
             app:useSimpleSummaryProvider="true" />
         <ListPreference
             app:defaultValue="LUNAR"

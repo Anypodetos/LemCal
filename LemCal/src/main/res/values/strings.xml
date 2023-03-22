@@ -1,5 +1,5 @@
 <!--
-Copyright 2022 Anypodetos (Michael Weber)
+Copyright 2022, 2023 Anypodetos (Michael Weber)
 
 This file is part of LemCal.
 
@@ -39,17 +39,19 @@ UTC = Coordinated Universal Time</string>
     <string name="solar_year">solar year %s</string>
     <string name="lunar_year">lunar year −%s</string>
     <string name="gregorian_year">%s CE</string>
-    <string name="solar_years">solar years %1$s/%2$s</string>
-    <string name="lunar_years">lunar years −%1$s/%2$s</string>
+    <string name="solar_years">solar yrs %1$s/%2$s</string>
+    <string name="lunar_years">lunar yrs −%1$s/%2$s</string>
     <string name="gregorian_years">%1$s/%2$s CE</string>
-    <string name="go_solar_year">Go to solar year</string>
-    <string name="go_lunar_year">Go to lunar year (omit minus sign)</string>
+    <string name="go_solar_year">Go to solar year (decimal)</string>
+    <string name="go_lunar_year">Go to lunar year (decimal; omit minus sign)</string>
     <string name="go_gregorian_year">Go to Common Era year</string>
     <string name="go_today">Go to today</string>
     <string name="solar_year_start">start of solar year %d</string>
+    <string name="solar_year_start_hex">start of solar year %X</string>
     <string name="week_title">This row</string>
     <string name="day_title">This day</string>
     <string name="lunar_template">Lunar year −%1$d, month %2$d, day %3$s</string>
+    <string name="lunar_template_hex">Lunar year −%1$X, month %2$X, day %3$s</string>
     <string name="unix_template">Unix day %s</string>
 
     <string name="settings">Settings</string>
