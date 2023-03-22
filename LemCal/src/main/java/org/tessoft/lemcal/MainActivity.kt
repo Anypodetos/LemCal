@@ -1,7 +1,7 @@
 package org.tessoft.lemcal
 
 /*
-Copyright 2022 Anypodetos (Michael Weber)
+Copyright 2022, 2023 Anypodetos (Michael Weber)
 
 This file is part of LemCal.
 
@@ -55,7 +55,8 @@ class MainActivity : AppCompatActivity() {
     var clipboard: ClipboardManager? = null
 
     var timeZone = 0
-    var datePosition = 0
+    var datePosition = -1
+    //var todayVisible = false
     var analogNumbers = 16
     var digitalNumbers = 16
     var calendarNumbers = 10
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity() {
         pager.setCurrentItem(preferences.getInt("page", 0), false)
         timeZone = preferences.getInt("timezone", 0)
         datePosition = preferences.getInt("datePosition", -1)
+        //todayVisible = preferences.getBoolean("todayVisible", false)
         analogNumbers = preferences.getString("analogNumbers", null)?.toIntOrNull() ?: 16
         digitalNumbers = preferences.getString("digitalNumbers", null)?.toIntOrNull() ?: 16
         calendarNumbers = preferences.getString("calendarNumbers", null)?.toIntOrNull() ?: 10
@@ -108,6 +110,7 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("page", pager.currentItem)
         editor.putInt("timezone", timeZone)
         editor.putInt("datePosition", datePosition)
+        //editor.putBoolean("todayVisible", todayVisible)
         editor.apply()
     }
 

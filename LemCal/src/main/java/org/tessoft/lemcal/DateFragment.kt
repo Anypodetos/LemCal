@@ -1,7 +1,7 @@
 package org.tessoft.lemcal
 
 /*
-Copyright 2022 Anypodetos (Michael Weber)
+Copyright 2022, 2023 Anypodetos (Michael Weber)
 
 This file is part of LemCal.
 
@@ -40,6 +40,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import java.text.DecimalFormat
@@ -53,7 +54,7 @@ const val SOLAR_YEAR_RANGE =  1200 /* lunar year gets inexact at about solar yea
 
 const val MARK_TODAY = 3f
 val BACK_COLORS = arrayOf(0, 0x60003cff, 0x600095ff, 0x6000d0ff, 0x6000ffbb, 0x6000ff22, 0x60b7ff00, 0x60ffdd00,
-                             0x60ffae00, 0x60ff7700, 0x60ff4000, 0x60ff005e, 0x60e100ff, 0x60b700ff, 0x606f00ff)
+                             0x60ffae00, 0x60ff7700, 0x60ff4000, 0x60ff005e, 0x60ff00d5, 0x60b700ff, 0x606f00ff)
 
 @SuppressLint("ClickableViewAccessibility")
 class WeekView(context: Context, attrs: AttributeSet) : View(context, attrs) {
@@ -122,15 +123,16 @@ class WeekView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                         playSoundEffect(SoundEffectConstants.CLICK)
                         val title = mainActivity.getString(if (cell == 0) R.string.week_title else R.string.day_title)
                         val lunarMessage = if (cell > 0)
-                            ("\n◆ " + resources.getString(R.string.lunar_template, lunarYear(cell), lunarMonths[if (cell < lunarBackLimits[1]) 0 else 1],
-                                cellTexts[cell][0].substringAfter('–'))) else ""
+                            ("\n◆ " + resources.getString(if (mainActivity.calendarNumbers == 10) R.string.lunar_template else R.string.lunar_template_hex,
+                                lunarYear(cell), lunarMonths[if (cell < lunarBackLimits[1]) 0 else 1], cellTexts[cell][0].substringAfter('–'))) else ""
                         val gregorianMessage = if (cell > 0)
                             ("\n◆ " + DateUtils.formatDateTime(context, (unixDay + cell - 1) * 86_400_000L,
                                 DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR)) else ""
                         val unixMessage = if (cell > 0)
                             ("\n◆ " + resources.getString(R.string.unix_template, DecimalFormat("#,###,##0").format(unixDay + cell - 1))
                                 .replace('-', '−')) else ""
-                        val message = "◆ $solarMessage $solarYear$lunarMessage$gregorianMessage$unixMessage"
+                        val message =
+                            "◆ $solarMessage, ${solarYear.toString(mainActivity.calendarNumbers).uppercase()}$lunarMessage$gregorianMessage$unixMessage"
                         AlertDialog.Builder(mainActivity)
                             .setTitle(title)
                             .setMessage(message)
@@ -221,15 +223,17 @@ class RecyclerAdapter internal constructor(private val mainActivity: MainActivit
             holder.week.solarYear % 4 == 0 && holder.week.solarYear % 128 != 0 -> 2
             else -> 1
         }
-        holder.week.today = with (Calendar.getInstance().timeInMillis / 86_400_000 - (holder.week.unixDay - 1L)) {
-            if (this in 1..dayCount) this.toInt() else 0
+        holder.week.today = (Calendar.getInstance().timeInMillis / 86_400_000 - (holder.week.unixDay - 1L)).let {
+            if (it in 1..dayCount) it.toInt() else 0
         }
+        val solarWeek = holder.week.solarWeek.toString(mainActivity.calendarNumbers).uppercase()
         holder.week.cellTexts[0][0] = when (holder.week.solarWeek) {
-            1, 21, 31, 41, 51 -> "${holder.week.solarWeek}st"
-            2, 22, 32, 42, 52 -> "${holder.week.solarWeek}nd"
-            3, 23, 33, 43     -> "${holder.week.solarWeek}rd"
-            53                -> if (dayCount == 1) "♆" else "ℓ/♆"
-            else              -> "${holder.week.solarWeek}th"
+            /* This syntax is just too cool not to use! */
+            in (if (mainActivity.calendarNumbers == 10) setOf(1, 21, 31, 41, 51) else setOf(1, 33, 49)) -> "${solarWeek}st"
+            in (if (mainActivity.calendarNumbers == 10) setOf(2, 22, 32, 42, 52) else setOf(2, 34, 50)) -> "${solarWeek}nd"
+            in (if (mainActivity.calendarNumbers == 10) setOf(3, 23, 33, 43    ) else setOf(3, 35, 51)) -> "${solarWeek}rd"
+            53 -> if (dayCount == 1) "♆" else "ℓ/♆"
+            else -> "${solarWeek}th"
         }
 
         /*  l u n a r   d a t e  */
@@ -263,12 +267,12 @@ class RecyclerAdapter internal constructor(private val mainActivity: MainActivit
         val lunarMonthLength = if (lunarMonth % 2 == 0 ||
             ((holder.week.lunarYear % 2 == 0 && holder.week.lunarYear % 16 != 0 || holder.week.lunarYear % 48 == 0) && lunarMonth == 3))
                 30 else 29
-        for (i in 1..dayCount) with((lunarDay + i - 1) % lunarMonthLength + 1) {
-            holder.week.cellTexts[i][0] = (if (this == 1) {
+        for (i in 1..dayCount) holder.week.cellTexts[i][0] = ((lunarDay + i - 1) % lunarMonthLength + 1).let {
+            (if (it == 1) {
                 if (i > 1) holder.week.lunarBackLimits[1] = i
-                "${holder.week.lunarMonths[if (i > 1) 1 else 0]}–"
-            } else "") + toString()
-        }
+                (holder.week.lunarMonths[if (i > 1) 1 else 0]).toString(mainActivity.calendarNumbers) + "–"
+            } else "") + it.toString(mainActivity.calendarNumbers)
+        }.uppercase()
 
         /*  G r e g o r i a n   d a t e  */
         for (i in 0..1) {
@@ -287,7 +291,8 @@ class RecyclerAdapter internal constructor(private val mainActivity: MainActivit
 
         /*  s o l a r   y e a r   s t a r t  */
         if (holder.week.solarWeek == 53 && holder.week.solarYear + 1 < SOLAR_YEAR_START + SOLAR_YEAR_RANGE)
-            holder.week.cellTexts[3 + dayCount][0] = mainActivity.getString(R.string.solar_year_start, holder.week.solarYear + 1)
+            holder.week.cellTexts[3 + dayCount][0] = mainActivity.getString(
+                if (mainActivity.calendarNumbers == 10) R.string.solar_year_start else R.string.solar_year_start_hex, holder.week.solarYear + 1)
     }
 
     inner class WeekViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -323,52 +328,48 @@ class DateFragment : Fragment() {
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (recycler.layoutManager is LinearLayoutManager) {
-                    val (first, firstWeek) = firstViewHolder()
-                    val (last,  lastWeek)  = lastViewHolder()
-                    val firstSolar = (first / 53 + SOLAR_YEAR_START).toString()
-                    val lastSolar  = (last  / 53 + SOLAR_YEAR_START).toString()
-                    solarYear.text = if (firstSolar == lastSolar) getString(R.string.solar_year, firstSolar) else
-                        getString(R.string.solar_years, firstSolar, lastSolar.removePrefix(lastSolar.commonPrefixWith(firstSolar)))
+                val (first, firstWeek) = firstViewHolder()
+                val (last,  lastWeek)  = lastViewHolder()
+                val firstSolar = (first / 53 + SOLAR_YEAR_START).toString((activity as MainActivity).calendarNumbers).uppercase()
+                val lastSolar  = (last  / 53 + SOLAR_YEAR_START).toString((activity as MainActivity).calendarNumbers).uppercase()
+                solarYear.text = if (firstSolar == lastSolar) getString(R.string.solar_year, firstSolar) else
+                    getString(R.string.solar_years, firstSolar, lastSolar.removePrefix(lastSolar.commonPrefixWith(firstSolar)))
 
-                    val firstLunar = firstWeek?.lunarYear.toString()
-                    val lastLunar  = lastWeek?.lunarYear(7).toString()
-                    lunarYear.text = if (firstLunar == lastLunar) getString(R.string.lunar_year, firstLunar) else
-                        getString(R.string.lunar_years, firstLunar, lastLunar.removePrefix(lastLunar.commonPrefixWith(firstLunar)))
+                val firstLunar = (firstWeek?.lunarYear ?: 0).toString((activity as MainActivity).calendarNumbers).uppercase()
+                val lastLunar  = (lastWeek?.lunarYear(7) ?: 0).toString((activity as MainActivity).calendarNumbers).uppercase()
+                lunarYear.text = if (firstLunar == lastLunar) getString(R.string.lunar_year, firstLunar) else
+                    getString(R.string.lunar_years, firstLunar, lastLunar.removePrefix(lastLunar.commonPrefixWith(firstLunar)))
 
-                    val firstGregorian = ((first - 2) / 53 - 1463 + SOLAR_YEAR_START).toString()
-                    val lastGregorian  = ((last  - 1) / 53 - 1463 + SOLAR_YEAR_START).toString()
-                    gregorianYear.text = if (firstGregorian == lastGregorian) getString(R.string.gregorian_year, firstGregorian) else
-                        getString(R.string.gregorian_years, firstGregorian, lastGregorian.removePrefix(lastGregorian.commonPrefixWith(firstGregorian)))
-                    (activity as MainActivity).datePosition = first
-                }
+                val firstGregorian = ((first - 2) / 53 - 1463 + SOLAR_YEAR_START).toString()
+                val lastGregorian  = ((last  - 1) / 53 - 1463 + SOLAR_YEAR_START).toString()
+                gregorianYear.text = if (firstGregorian == lastGregorian) getString(R.string.gregorian_year, firstGregorian) else
+                    getString(R.string.gregorian_years, firstGregorian, lastGregorian.removePrefix(lastGregorian.commonPrefixWith(firstGregorian)))
+                (activity as MainActivity).datePosition = first
+                //(activity as MainActivity).todayVisible =
+                //    (Calendar.getInstance().timeInMillis / 86_400_000 in (firstWeek?.unixDay ?: Int.MAX_VALUE)..(lastWeek?.unixDay ?: Int.MIN_VALUE) + 6)
             }
         })
 
         solarYear.setOnClickListener {
             gotoYearDialog(R.string.go_solar_year) {
+                Log.d("solarYear", "$it ")
                 (it - SOLAR_YEAR_START) * 53 - 1
             }
         }
         lunarYear.setOnClickListener {
             gotoYearDialog(R.string.go_lunar_year) {
-                ((it - 2078) * 59.7245 - UNIX_DAY_START / 6.89136).roundToInt() - 20 /// tweak?
+                ((it - 2078) * 59.725 - UNIX_DAY_START / 6.89136).roundToInt() - 20
             }
         }
         gregorianYear.setOnClickListener {
             gotoYearDialog(R.string.go_gregorian_year) {
-                (it + 1463 - SOLAR_YEAR_START) * 53 + 1
+                (it + 1463 - SOLAR_YEAR_START) * 53
             }
         }
 
         todayButton.setOnClickListener {
-            val (thisPos, size) = (recycler.layoutManager as LinearLayoutManager).let {
-                Pair((it.findLastVisibleItemPosition() + it.findFirstVisibleItemPosition()) / 2,
-                      it.findLastVisibleItemPosition() - it.findFirstVisibleItemPosition())
-            }
-            with (Calendar.getInstance()) {
-                val todayPos = (get(Calendar.YEAR) + 1463 - SOLAR_YEAR_START) * 53 + get(Calendar.WEEK_OF_YEAR)
-                scrollTo(todayPos + if (todayPos < thisPos) - size / 2 else size / 2)
+            with(Calendar.getInstance()) {
+                scrollTo((get(Calendar.YEAR) + 1463 - SOLAR_YEAR_START) * 53 + get(Calendar.WEEK_OF_YEAR))
             }
         }
 
@@ -376,6 +377,12 @@ class DateFragment : Fragment() {
             if (this == -1) todayButton.performClick() else recycler.scrollToPosition(this)
         }
         return root
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onResume() {
+        super.onResume()
+        recycler.adapter?.notifyDataSetChanged() /* update numbers when dec/hex has changed */
     }
 
     private fun gotoYearDialog(titleRes: Int, calcPos: (Int) -> Int) {
@@ -411,7 +418,7 @@ class DateFragment : Fragment() {
     private fun scrollTo(position: Int) {
       //  val distance = position - (activity as MainActivity).datePosition
       //  if (abs(distance) > 10) recycler.scrollToPosition(position - 10 * distance.sign)
-        recycler.scrollToPosition(position)
+        (recycler.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
     }
 
     companion object {

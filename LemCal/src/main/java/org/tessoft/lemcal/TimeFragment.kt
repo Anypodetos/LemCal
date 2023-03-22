@@ -1,7 +1,7 @@
 package org.tessoft.lemcal
 
 /*
-Copyright 2022 Anypodetos (Michael Weber)
+Copyright 2022, 2023 Anypodetos (Michael Weber)
 
 This file is part of LemCal.
 
@@ -161,7 +161,9 @@ class TimeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             timeFloat *= 16
         }
 
-        lemTimeText = time.toString(mainActivity?.digitalNumbers ?: 16).uppercase().padStart(4, '0')
+        lemTimeText = time.toString(mainActivity?.digitalNumbers ?: 16).let {
+            if (mainActivity?.digitalNumbers == 10) it else it.uppercase().padStart(4, '0')
+        }
     }
 
     private fun calcOurClock() {
